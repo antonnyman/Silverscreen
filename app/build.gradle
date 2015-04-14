@@ -20,6 +20,9 @@ android {
 
     packagingOptions {
         exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+
     }
 }
 
@@ -30,5 +33,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.jakewharton:butterknife:5.1.2'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.firebase:firebase-client-android:2.2.3+'
     compile "org.parceler:parceler:0.2.16"
 }

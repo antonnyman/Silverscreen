@@ -7,11 +7,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -23,22 +31,29 @@ import se.k3.antonochisak.silverscreen.MainActivity;
 import se.k3.antonochisak.silverscreen.R;
 import se.k3.antonochisak.silverscreen.adapters.MovieAdapter;
 import se.k3.antonochisak.silverscreen.api.model.ApiResponse;
+import se.k3.antonochisak.silverscreen.models.Fanart;
+import se.k3.antonochisak.silverscreen.models.Movie;
 import se.k3.antonochisak.silverscreen.models.Poster;
 
 /**
  * Created by anton on 2015-04-13.
  */
-public class MoviesFragment extends Fragment {
+public class MoviesFragment extends Fragment implements GridView.OnItemClickListener {
 
     private static final String TAG = MoviesFragment.class.getSimpleName();
 
     @InjectView(R.id.gridView)
     GridView mMoviesList;
 
-    @InjectView(R.id.update_button) Button button;
-
     List<Poster> mPosters;
+    List<Movie> mMovies;
+
+    Map<String, Object> mMovieMap;
+
     MovieAdapter mAdapter;
+
+    Firebase firebase;
+    Firebase ref;
 
 
     @Nullable
@@ -47,35 +62,46 @@ public class MoviesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_movies, container, false);
         ButterKnife.inject(this, view);
 
-        mPosters = getPosters();
+        mPosters = new ArrayList<>();
+        mMovies = new ArrayList<>();
+        mMovieMap = new HashMap<>();
+
         mAdapter = new MovieAdapter(mPosters, getActivity().getLayoutInflater());
         mMoviesList.setAdapter(mAdapter);
+        mMoviesList.setOnItemClickListener(this);
 
+        firebase = new Firebase("https://klara.firebaseio.com/");
+        ref = firebase.child("top_movies");
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, String.valueOf(mAdapter.getCount()));
-                mAdapter.notifyDataSetChanged();
-            }
-        });
+        getMovies();
 
         return view;
     }
 
 
 
-    private List<Poster> getPosters() {
-        final List<Poster> posters = new ArrayList<>();
+    private void getMovies() {
         MainActivity.restClient.getApiService().getPopular("images", new Callback<List<ApiResponse>>() {
             @Override
             public void success(List<ApiResponse> apiResponses, Response response) {
                 for (int i = 0; i < apiResponses.size(); i++) {
 
-                    posters.add(new Poster(
+                    mPosters.add(new Poster(
                             apiResponses.get(i).getImage().getPoster().getFullPoster(),
                             apiResponses.get(i).getImage().getPoster().getMediumPoster(),
-                            apiResponses.get(i).getImage().getPoster().getThumbPoster()));
+                            apiResponses.get(i).getImage().getPoster().getThumbPoster()
+                            )
+                    );
+
+                    mMovies.add(new Movie(
+                                    apiResponses.get(i).getTitle(),
+                                    apiResponses.get(i).getSlugline(),
+                                    apiResponses.get(i).getImage().getPoster().getMediumPoster(),
+                                    apiResponses.get(i).getImage().getFanart().getFullFanart(),
+                                    apiResponses.get(i).getYear()
+                            )
+                    );
+
                     mAdapter.notifyDataSetChanged();
                 }
 
@@ -88,9 +114,22 @@ public class MoviesFragment extends Fragment {
             }
         });
 
-
-        return posters;
     }
 
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+        mMovieMap.put("title", mMovies.get(i).getTitle());
+        mMovieMap.put("year", String.valueOf(mMovies.get(i).getYear()));
+        mMovieMap.put("slugline", mMovies.get(i).getSlugline());
+        mMovieMap.put("poster", mMovies.get(i).getPoster());
+        mMovieMap.put("fanart", mMovies.get(i).getFanart());
+        ref.push().setValue(mMovieMap, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                Toast.makeText(getActivity(), "Gillade " + mMovies.get(i).getTitle(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
 }

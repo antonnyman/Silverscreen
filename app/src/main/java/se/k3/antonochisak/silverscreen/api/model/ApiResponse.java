@@ -17,6 +17,9 @@ public class ApiResponse {
     @SerializedName("title")
     public String title;
 
+    @SerializedName("slugline")
+    public String slugline;
+
     @SerializedName("year")
     public int year;
 
@@ -25,6 +28,10 @@ public class ApiResponse {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getSlugline() {
+        return slugline;
     }
 
     public int getYear() {

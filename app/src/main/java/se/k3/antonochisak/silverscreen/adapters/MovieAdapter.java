@@ -1,5 +1,7 @@
 package se.k3.antonochisak.silverscreen.adapters;
 
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import se.k3.antonochisak.silverscreen.R;
+import se.k3.antonochisak.silverscreen.helpers.StaticHelpers;
 import se.k3.antonochisak.silverscreen.models.Image;
 import se.k3.antonochisak.silverscreen.models.Poster;
 
@@ -25,19 +28,28 @@ public class MovieAdapter extends BaseAdapter {
 
     List<Poster> mMovies;
     LayoutInflater mLayoutInflater;
+    private int mItemWidth, mItemHeight, mMargin, mColumns;
 
     public MovieAdapter(List<Poster> mMovies, LayoutInflater mLayoutInflater) {
         this.mMovies = mMovies;
         this.mLayoutInflater = mLayoutInflater;
+
+
     }
 
     class ViewHolder {
         @InjectView(R.id.poster)
         ImageView poster;
-        @InjectView(R.id.title)
-        TextView title;
 
-        public ViewHolder(View view) { ButterKnife.inject(this, view); }
+        public ViewHolder(View view) {
+            ButterKnife.inject(this, view);
+
+            int screenWidth = StaticHelpers.getScreenWidth(view.getContext());
+            mItemWidth = (screenWidth / 2);
+            mItemHeight = (int) ((double) mItemWidth / 0.677);
+            mMargin = StaticHelpers.getPixelsFromDp(view.getContext(), 2);
+
+        }
     }
 
     @Override
@@ -66,8 +78,11 @@ public class MovieAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
 
-        //holder.title.setText("");
-        Picasso.with(view.getContext()).load(mMovies.get(i).getMediumPoster()).into(holder.poster);
+        //holder.poster.setImageDrawable(ContextCompat.getDrawable(view.getContext(), R.drawable.large_movie_poster));
+        Picasso.with(view.getContext())
+                .load(mMovies.get(i).getMediumPoster())
+                .resize(mItemWidth, mItemHeight)
+                .into(holder.poster);
         return view;
     }
 }

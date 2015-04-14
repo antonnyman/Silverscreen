@@ -6,6 +6,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.firebase.client.Firebase;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import se.k3.antonochisak.silverscreen.api.RestClient;
@@ -27,14 +29,12 @@ public class MainActivity extends ActionBarActivity {
         ButterKnife.inject(this);
 
         restClient = new RestClient();
+        Firebase.setAndroidContext(this);
 
         setSupportActionBar(mToolbar);
 
         if(savedInstanceState == null) {
-
             getFragmentManager().beginTransaction().replace(R.id.content_frame, new MoviesFragment()).commit();
-
-            //mFragmentHelper.replaceFragment(new InTheatersFragment(), "InTheatersFragment", false);
         }
     }
 
