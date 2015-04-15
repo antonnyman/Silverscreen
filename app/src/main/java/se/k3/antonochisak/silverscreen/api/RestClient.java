@@ -26,7 +26,7 @@ public class RestClient {
                 .registerTypeAdapter(Date.class, new DateTypeAdapter())
                 .create();
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                //.setLogLevel(RestAdapter.LogLevel.FULL)
                 .setEndpoint(API_URL)
                 .setConverter(new GsonConverter(gson))
                 .build();

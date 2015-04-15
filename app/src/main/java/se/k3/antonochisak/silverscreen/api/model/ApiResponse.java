@@ -6,6 +6,7 @@ import org.parceler.Parcel;
 
 import java.util.ArrayList;
 
+import se.k3.antonochisak.silverscreen.models.Ids;
 import se.k3.antonochisak.silverscreen.models.Image;
 
 /**
@@ -17,8 +18,8 @@ public class ApiResponse {
     @SerializedName("title")
     public String title;
 
-    @SerializedName("slugline")
-    public String slugline;
+    @SerializedName("ids")
+    public Ids ids;
 
     @SerializedName("year")
     public int year;
@@ -30,8 +31,8 @@ public class ApiResponse {
         return title;
     }
 
-    public String getSlugline() {
-        return slugline;
+    public Ids getIds() {
+        return ids;
     }
 
     public int getYear() {

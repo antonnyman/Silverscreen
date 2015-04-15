@@ -13,8 +13,13 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.MutableData;
+import com.firebase.client.Transaction;
+import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,11 +54,17 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
     List<Movie> mMovies;
 
     Map<String, Object> mMovieMap;
+    Map<String, Object> mFirebaseMap;
 
     MovieAdapter mAdapter;
 
     Firebase firebase;
     Firebase ref;
+    Firebase voteRef;
+
+    String mCurrentClickedMovie = "";
+    Long mVotes;
+
 
 
     @Nullable
@@ -87,15 +98,15 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
                 for (int i = 0; i < apiResponses.size(); i++) {
 
                     mPosters.add(new Poster(
-                            apiResponses.get(i).getImage().getPoster().getFullPoster(),
-                            apiResponses.get(i).getImage().getPoster().getMediumPoster(),
-                            apiResponses.get(i).getImage().getPoster().getThumbPoster()
+                                    apiResponses.get(i).getImage().getPoster().getFullPoster(),
+                                    apiResponses.get(i).getImage().getPoster().getMediumPoster(),
+                                    apiResponses.get(i).getImage().getPoster().getThumbPoster()
                             )
                     );
 
                     mMovies.add(new Movie(
                                     apiResponses.get(i).getTitle(),
-                                    apiResponses.get(i).getSlugline(),
+                                    apiResponses.get(i).getIds().getSlug(),
                                     apiResponses.get(i).getImage().getPoster().getMediumPoster(),
                                     apiResponses.get(i).getImage().getFanart().getFullFanart(),
                                     apiResponses.get(i).getYear()
@@ -119,17 +130,66 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+
+        mCurrentClickedMovie = mMovies.get(i).getSlugline();
+
         mMovieMap.put("title", mMovies.get(i).getTitle());
         mMovieMap.put("year", String.valueOf(mMovies.get(i).getYear()));
         mMovieMap.put("slugline", mMovies.get(i).getSlugline());
         mMovieMap.put("poster", mMovies.get(i).getPoster());
         mMovieMap.put("fanart", mMovies.get(i).getFanart());
-        ref.push().setValue(mMovieMap, new Firebase.CompletionListener() {
+        ref.child(mCurrentClickedMovie).updateChildren(mMovieMap, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 Toast.makeText(getActivity(), "Gillade " + mMovies.get(i).getTitle(), Toast.LENGTH_SHORT).show();
+                Log.d(TAG, mCurrentClickedMovie);
+                updateVotes();
             }
         });
 
+
     }
+
+    private void updateVotes() {
+        ref.child(mCurrentClickedMovie + "/votes").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if (mutableData.getValue() == null) {
+                    mutableData.setValue(1);
+                    Log.d(TAG + " mutableValue:" + mutableData, mutableData.getValue().toString());
+                } else {
+                    mutableData.setValue((Long) mutableData.getValue() + 1);
+
+                }
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+                if(firebaseError != null) {
+                    Log.d(TAG + " Error bro", firebaseError.getMessage());
+                }
+            }
+        });
+    }
+
+/*
+    voteRef.runTransaction(new Transaction.Handler() {
+        @Override
+        public Transaction.Result doTransaction(MutableData mutableData) {
+            if (mutableData == null) {
+                mutableData.setValue(1);
+            } else {
+                mutableData.setValue((Long) mutableData.getValue() + 1);
+            }
+
+            return Transaction.success(mutableData);
+        }
+
+        @Override
+        public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+        }
+    });
+    */
 }
