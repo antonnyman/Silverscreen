@@ -77,7 +77,7 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
         mMovies = new ArrayList<>();
         mMovieMap = new HashMap<>();
 
-        mAdapter = new MovieAdapter(mPosters, getActivity().getLayoutInflater());
+        mAdapter = new MovieAdapter(mMovies, getActivity().getLayoutInflater());
         mMoviesList.setAdapter(mAdapter);
         mMoviesList.setOnItemClickListener(this);
 
@@ -96,13 +96,6 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
             @Override
             public void success(List<ApiResponse> apiResponses, Response response) {
                 for (int i = 0; i < apiResponses.size(); i++) {
-
-                    mPosters.add(new Poster(
-                                    apiResponses.get(i).getImage().getPoster().getFullPoster(),
-                                    apiResponses.get(i).getImage().getPoster().getMediumPoster(),
-                                    apiResponses.get(i).getImage().getPoster().getThumbPoster()
-                            )
-                    );
 
                     mMovies.add(new Movie(
                                     apiResponses.get(i).getTitle(),
@@ -173,23 +166,4 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
             }
         });
     }
-
-/*
-    voteRef.runTransaction(new Transaction.Handler() {
-        @Override
-        public Transaction.Result doTransaction(MutableData mutableData) {
-            if (mutableData == null) {
-                mutableData.setValue(1);
-            } else {
-                mutableData.setValue((Long) mutableData.getValue() + 1);
-            }
-
-            return Transaction.success(mutableData);
-        }
-
-        @Override
-        public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
-        }
-    });
-    */
 }

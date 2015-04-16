@@ -19,6 +19,7 @@ import butterknife.InjectView;
 import se.k3.antonochisak.silverscreen.R;
 import se.k3.antonochisak.silverscreen.helpers.StaticHelpers;
 import se.k3.antonochisak.silverscreen.models.Image;
+import se.k3.antonochisak.silverscreen.models.Movie;
 import se.k3.antonochisak.silverscreen.models.Poster;
 
 /**
@@ -26,11 +27,11 @@ import se.k3.antonochisak.silverscreen.models.Poster;
  */
 public class MovieAdapter extends BaseAdapter {
 
-    List<Poster> mMovies;
+    List<Movie> mMovies;
     LayoutInflater mLayoutInflater;
     private int mItemWidth, mItemHeight, mMargin, mColumns;
 
-    public MovieAdapter(List<Poster> mMovies, LayoutInflater mLayoutInflater) {
+    public MovieAdapter(List<Movie> mMovies, LayoutInflater mLayoutInflater) {
         this.mMovies = mMovies;
         this.mLayoutInflater = mLayoutInflater;
 
@@ -80,7 +81,7 @@ public class MovieAdapter extends BaseAdapter {
 
         //holder.poster.setImageDrawable(ContextCompat.getDrawable(view.getContext(), R.drawable.large_movie_poster));
         Picasso.with(view.getContext())
-                .load(mMovies.get(i).getMediumPoster())
+                .load(mMovies.get(i).getPoster())
                 .resize(mItemWidth, mItemHeight)
                 .into(holder.poster);
         return view;
