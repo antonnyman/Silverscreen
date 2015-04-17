@@ -27,6 +27,7 @@ import se.k3.antonochisak.silverscreen.models.Poster;
  */
 public class MovieAdapter extends BaseAdapter {
 
+
     List<Movie> mMovies;
     LayoutInflater mLayoutInflater;
     private int mItemWidth, mItemHeight, mMargin, mColumns;
@@ -41,6 +42,10 @@ public class MovieAdapter extends BaseAdapter {
     class ViewHolder {
         @InjectView(R.id.poster)
         ImageView poster;
+
+        @InjectView(R.id.votes)
+        TextView votes;
+
 
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);
@@ -84,6 +89,8 @@ public class MovieAdapter extends BaseAdapter {
                 .load(mMovies.get(i).getPoster())
                 .resize(mItemWidth, mItemHeight)
                 .into(holder.poster);
+
+
         return view;
     }
 }

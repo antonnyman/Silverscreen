@@ -12,6 +12,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import se.k3.antonochisak.silverscreen.api.RestClient;
 import se.k3.antonochisak.silverscreen.fragments.MoviesFragment;
+import se.k3.antonochisak.silverscreen.fragments.NavigationDrawerFragment;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -19,6 +20,7 @@ public class MainActivity extends ActionBarActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     public static RestClient restClient;
+    NavigationDrawerFragment mNavigationDrawerFragment;
 
     @InjectView(R.id.toolbar) Toolbar mToolbar;
 
@@ -32,6 +34,7 @@ public class MainActivity extends ActionBarActivity {
         Firebase.setAndroidContext(this);
 
         setSupportActionBar(mToolbar);
+        mNavigationDrawerFragment = new NavigationDrawerFragment(getFragmentManager(), this);
 
         if(savedInstanceState == null) {
             getFragmentManager().beginTransaction().replace(R.id.content_frame, new MoviesFragment()).commit();
@@ -47,16 +50,9 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if(mNavigationDrawerFragment.drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

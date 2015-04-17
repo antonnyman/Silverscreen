@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.ChildEventListener;
@@ -54,16 +55,15 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
     List<Movie> mMovies;
 
     Map<String, Object> mMovieMap;
-    Map<String, Object> mFirebaseMap;
 
     MovieAdapter mAdapter;
 
+
+
     Firebase firebase;
     Firebase ref;
-    Firebase voteRef;
 
     String mCurrentClickedMovie = "";
-    Long mVotes;
 
 
 
@@ -76,6 +76,8 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
         mPosters = new ArrayList<>();
         mMovies = new ArrayList<>();
         mMovieMap = new HashMap<>();
+
+
 
         mAdapter = new MovieAdapter(mMovies, getActivity().getLayoutInflater());
         mMoviesList.setAdapter(mAdapter);
@@ -118,6 +120,35 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
             }
         });
 
+    }
+
+    private void getVotes() {
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
     }
 
 

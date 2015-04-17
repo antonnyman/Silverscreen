@@ -3,4 +3,17 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string name="drawer_opened">Drawer opened</string>
+    <string name="drawer_closed">Drawer closed</string>
+
+    <string name="movie_fragment">Silverscreen</string>
+    <string name="search_fragment">SearchFragment</string>
+    <string name="manage_schedules_fragment">Manage schedules</string>
+    <string name="settings_fragment">Settings</string>
+
+    <string-array name="drawer_items" >
+        <item>@string/manage_schedules_fragment</item>
+        <item>@string/settings_fragment</item>
+    </string-array>
 </resources>
