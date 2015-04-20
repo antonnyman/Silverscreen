@@ -44,40 +44,34 @@ import se.k3.antonochisak.silverscreen.models.Poster;
 /**
  * Created by anton on 2015-04-13.
  */
-public class MoviesFragment extends Fragment implements GridView.OnItemClickListener {
+public class MoviesFragment extends Fragment implements GridView.OnItemClickListener, Callback<List<ApiResponse>> {
 
     private static final String TAG = MoviesFragment.class.getSimpleName();
 
-    @InjectView(R.id.gridView)
-    GridView mMoviesList;
+    @InjectView(R.id.gridView) GridView mMoviesList;
 
     List<Poster> mPosters;
     List<Movie> mMovies;
-
     Map<String, Object> mMovieMap;
 
     MovieAdapter mAdapter;
-
-
-
     Firebase firebase;
     Firebase ref;
-
     String mCurrentClickedMovie = "";
 
-
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mPosters = new ArrayList<>();
+        mMovies = new ArrayList<>();
+        mMovieMap = new HashMap<>();
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movies, container, false);
         ButterKnife.inject(this, view);
-
-        mPosters = new ArrayList<>();
-        mMovies = new ArrayList<>();
-        mMovieMap = new HashMap<>();
-
-
 
         mAdapter = new MovieAdapter(mMovies, getActivity().getLayoutInflater());
         mMoviesList.setAdapter(mAdapter);
@@ -87,81 +81,42 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
         ref = firebase.child("top_movies");
 
         getMovies();
-
         return view;
     }
 
-
-
     private void getMovies() {
-        MainActivity.restClient.getApiService().getPopular("images", new Callback<List<ApiResponse>>() {
-            @Override
-            public void success(List<ApiResponse> apiResponses, Response response) {
-                for (int i = 0; i < apiResponses.size(); i++) {
-
-                    mMovies.add(new Movie(
-                                    apiResponses.get(i).getTitle(),
-                                    apiResponses.get(i).getIds().getSlug(),
-                                    apiResponses.get(i).getImage().getPoster().getMediumPoster(),
-                                    apiResponses.get(i).getImage().getFanart().getFullFanart(),
-                                    apiResponses.get(i).getYear()
-                            )
-                    );
-
-                    mAdapter.notifyDataSetChanged();
-                }
-
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                error.printStackTrace();
-            }
-        });
-
+        MainActivity.restClient.getApiService().getPopular("images", this);
     }
 
-    private void getVotes() {
-        ref.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
+    @Override
+    public void success(List<ApiResponse> apiResponses, Response response) {
+        for (int i = 0; i < apiResponses.size(); i++) {
+            mMovies.add(new Movie(
+                            apiResponses.get(i).getTitle(),
+                            apiResponses.get(i).getIds().getSlug(),
+                            apiResponses.get(i).getImage().getPoster().getMediumPoster(),
+                            apiResponses.get(i).getImage().getFanart().getFullFanart(),
+                            apiResponses.get(i).getYear()
+                    )
+            );
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
+    @Override
+    public void failure(RetrofitError error) {
+        error.printStackTrace();
+    }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
-
         mCurrentClickedMovie = mMovies.get(i).getSlugline();
-
         mMovieMap.put("title", mMovies.get(i).getTitle());
         mMovieMap.put("year", String.valueOf(mMovies.get(i).getYear()));
         mMovieMap.put("slugline", mMovies.get(i).getSlugline());
         mMovieMap.put("poster", mMovies.get(i).getPoster());
         mMovieMap.put("fanart", mMovies.get(i).getFanart());
+
         ref.child(mCurrentClickedMovie).updateChildren(mMovieMap, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
@@ -170,8 +125,6 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
                 updateVotes();
             }
         });
-
-
     }
 
     private void updateVotes() {
@@ -183,15 +136,13 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
                     Log.d(TAG + " mutableValue:" + mutableData, mutableData.getValue().toString());
                 } else {
                     mutableData.setValue((Long) mutableData.getValue() + 1);
-
                 }
-
                 return Transaction.success(mutableData);
             }
 
             @Override
             public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
-                if(firebaseError != null) {
+                if (firebaseError != null) {
                     Log.d(TAG + " Error bro", firebaseError.getMessage());
                 }
             }

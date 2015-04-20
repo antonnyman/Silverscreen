@@ -26,7 +26,7 @@ import se.k3.antonochisak.silverscreen.adapters.SimpleBaseAdapter;
 /**
  * Created by isak on 2015-04-10.
  */
-public class NavigationDrawerFragment implements AdapterView.OnItemClickListener {
+public class NavigationDrawer implements AdapterView.OnItemClickListener {
 
     ActionBar mActionBar;
 
@@ -42,7 +42,7 @@ public class NavigationDrawerFragment implements AdapterView.OnItemClickListener
     @InjectView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
 
-    public NavigationDrawerFragment(FragmentManager fm, Activity activity) {
+    public NavigationDrawer(FragmentManager fm, Activity activity) {
         ButterKnife.inject(this, activity);
         mTitle = activity.getResources().getString(R.string.movie_fragment);
 

@@ -12,7 +12,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import se.k3.antonochisak.silverscreen.api.RestClient;
 import se.k3.antonochisak.silverscreen.fragments.MoviesFragment;
-import se.k3.antonochisak.silverscreen.fragments.NavigationDrawerFragment;
+import se.k3.antonochisak.silverscreen.fragments.NavigationDrawer;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -20,7 +20,7 @@ public class MainActivity extends ActionBarActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     public static RestClient restClient;
-    NavigationDrawerFragment mNavigationDrawerFragment;
+    NavigationDrawer mNavigationDrawer;
 
     @InjectView(R.id.toolbar) Toolbar mToolbar;
 
@@ -34,7 +34,7 @@ public class MainActivity extends ActionBarActivity {
         Firebase.setAndroidContext(this);
 
         setSupportActionBar(mToolbar);
-        mNavigationDrawerFragment = new NavigationDrawerFragment(getFragmentManager(), this);
+        mNavigationDrawer = new NavigationDrawer(getFragmentManager(), this);
 
         if(savedInstanceState == null) {
             getFragmentManager().beginTransaction().replace(R.id.content_frame, new MoviesFragment()).commit();
@@ -50,7 +50,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(mNavigationDrawerFragment.drawerToggle.onOptionsItemSelected(item)) {
+        if(mNavigationDrawer.drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);

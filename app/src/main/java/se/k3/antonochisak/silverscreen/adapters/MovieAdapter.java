@@ -35,17 +35,11 @@ public class MovieAdapter extends BaseAdapter {
     public MovieAdapter(List<Movie> mMovies, LayoutInflater mLayoutInflater) {
         this.mMovies = mMovies;
         this.mLayoutInflater = mLayoutInflater;
-
-
     }
 
     class ViewHolder {
         @InjectView(R.id.poster)
         ImageView poster;
-
-        @InjectView(R.id.votes)
-        TextView votes;
-
 
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);
@@ -54,8 +48,25 @@ public class MovieAdapter extends BaseAdapter {
             mItemWidth = (screenWidth / 2);
             mItemHeight = (int) ((double) mItemWidth / 0.677);
             mMargin = StaticHelpers.getPixelsFromDp(view.getContext(), 2);
-
         }
+    }
+
+    @Override
+    public View getView(int i, View view, ViewGroup viewGroup) {
+        ViewHolder holder;
+        if (view == null) {
+            view = mLayoutInflater.inflate(R.layout.list_item, viewGroup, false);
+            holder = new ViewHolder(view);
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder) view.getTag();
+        }
+
+        Picasso.with(view.getContext())
+                .load(mMovies.get(i).getPoster())
+                .resize(mItemWidth, mItemHeight)
+                .into(holder.poster);
+        return view;
     }
 
     @Override
@@ -71,26 +82,5 @@ public class MovieAdapter extends BaseAdapter {
     @Override
     public long getItemId(int i) {
         return i;
-    }
-
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        ViewHolder holder;
-        if (view == null) {
-            view = mLayoutInflater.inflate(R.layout.list_item, viewGroup, false);
-            holder = new ViewHolder(view);
-            view.setTag(holder);
-        } else {
-            holder = (ViewHolder) view.getTag();
-        }
-
-        //holder.poster.setImageDrawable(ContextCompat.getDrawable(view.getContext(), R.drawable.large_movie_poster));
-        Picasso.with(view.getContext())
-                .load(mMovies.get(i).getPoster())
-                .resize(mItemWidth, mItemHeight)
-                .into(holder.poster);
-
-
-        return view;
     }
 }
