@@ -10,14 +10,15 @@ import com.firebase.client.Firebase;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import se.k3.antonochisak.silverscreen.api.RestClient;
 import se.k3.antonochisak.silverscreen.fragments.PopularMoviesFragment;
 import se.k3.antonochisak.silverscreen.adapters.NavigationDrawer;
+
 
 
 public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
 
     NavigationDrawer mNavigationDrawer;
 

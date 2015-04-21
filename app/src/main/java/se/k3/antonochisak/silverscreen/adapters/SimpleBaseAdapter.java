@@ -35,21 +35,6 @@ public class SimpleBaseAdapter extends BaseAdapter {
         }
     }
 
-    @Override
-    public int getCount() {
-        return mList.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return mList.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
     @SuppressLint("InflateParams")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -64,5 +49,20 @@ public class SimpleBaseAdapter extends BaseAdapter {
         }
         holder.itemTextView.setText(mList.get(position));
         return v;
+    }
+
+    @Override
+    public int getCount() {
+        return mList.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return mList.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 }

@@ -40,37 +40,35 @@ import se.k3.antonochisak.silverscreen.models.Poster;
 /**
  * Created by anton on 2015-04-13.
  */
-public class PopularMoviesFragment extends Fragment implements GridView.OnItemClickListener {
+
+public class PopularMoviesFragment extends Fragment implements GridView.OnItemClickListener, Callback<List<ApiResponse>> {
 
     private static final String TAG = PopularMoviesFragment.class.getSimpleName();
 
-    @InjectView(R.id.gridView)
-    GridView mMoviesList;
+    @InjectView(R.id.gridView) GridView mMoviesList;
 
     List<Poster> mPosters;
     List<Movie> mMovies;
-
     Map<String, Object> mMovieMap;
-
     MovieAdapter mAdapter;
-
     RestClient restClient;
     Firebase firebase;
     Firebase ref;
-
     String mCurrentClickedMovie = "";
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mPosters = new ArrayList<>();
+        mMovies = new ArrayList<>();
+        mMovieMap = new HashMap<>();
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movies, container, false);
         ButterKnife.inject(this, view);
-
-        mPosters = new ArrayList<>();
-        mMovies = new ArrayList<>();
-        mMovieMap = new HashMap<>();
-
-
 
         mAdapter = new MovieAdapter(mMovies, getActivity().getLayoutInflater());
         mMoviesList.setAdapter(mAdapter);
@@ -80,54 +78,42 @@ public class PopularMoviesFragment extends Fragment implements GridView.OnItemCl
         firebase = new Firebase("https://klara.firebaseio.com/");
         ref = firebase.child(StaticHelpers.FIREBASE_CHILD);
 
-        getMovies();
-
+        restClient.getApiService().getPopular("images", this);
         return view;
     }
 
 
 
-    private void getMovies() {
-        restClient.getApiService().getPopular("images", new Callback<List<ApiResponse>>() {
-            @Override
-            public void success(List<ApiResponse> apiResponses, Response response) {
-                for (int i = 0; i < apiResponses.size(); i++) {
-
-                    mMovies.add(new Movie(
-                                    apiResponses.get(i).getTitle(),
-                                    apiResponses.get(i).getIds().getSlug(),
-                                    apiResponses.get(i).getImage().getPoster().getMediumPoster(),
-                                    apiResponses.get(i).getImage().getFanart().getMediumFanart(),
-                                    apiResponses.get(i).getYear(),
-                                    0
-                            )
-                    );
-
-                    mAdapter.notifyDataSetChanged();
-                }
-
-
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                error.printStackTrace();
-            }
-        });
-
+    @Override
+    public void success(List<ApiResponse> apiResponses, Response response) {
+        for (int i = 0; i < apiResponses.size(); i++) {
+            mMovies.add(new Movie(
+                            apiResponses.get(i).getTitle(),
+                            apiResponses.get(i).getIds().getSlug(),
+                            apiResponses.get(i).getImage().getPoster().getMediumPoster(),
+                            apiResponses.get(i).getImage().getFanart().getFullFanart(),
+                            apiResponses.get(i).getYear(),
+                            0
+                    )
+            );
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
+    @Override
+    public void failure(RetrofitError error) {
+        error.printStackTrace();
+    }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
-
         mCurrentClickedMovie = mMovies.get(i).getSlugline();
-
         mMovieMap.put("title", mMovies.get(i).getTitle());
         mMovieMap.put("year", String.valueOf(mMovies.get(i).getYear()));
         mMovieMap.put("slugline", mMovies.get(i).getSlugline());
         mMovieMap.put("poster", mMovies.get(i).getPoster());
         mMovieMap.put("fanart", mMovies.get(i).getFanart());
+
         ref.child(mCurrentClickedMovie).updateChildren(mMovieMap, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
@@ -136,8 +122,6 @@ public class PopularMoviesFragment extends Fragment implements GridView.OnItemCl
                 updateVotes();
             }
         });
-
-
     }
 
     private void updateVotes() {
@@ -149,15 +133,13 @@ public class PopularMoviesFragment extends Fragment implements GridView.OnItemCl
                     Log.d(TAG + " mutableValue:" + mutableData, mutableData.getValue().toString());
                 } else {
                     mutableData.setValue((Long) mutableData.getValue() + 1);
-
                 }
-
                 return Transaction.success(mutableData);
             }
 
             @Override
             public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
-                if(firebaseError != null) {
+                if (firebaseError != null) {
                     Log.d(TAG + " Error bro", firebaseError.getMessage());
                 }
             }
