@@ -9,15 +9,5 @@
         android:id="@+id/poster"
         android:background="@drawable/large_movie_poster"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/votes"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

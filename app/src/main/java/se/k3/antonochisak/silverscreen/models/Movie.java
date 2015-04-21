@@ -7,18 +7,20 @@ import org.parceler.ParcelConstructor;
  * Created by anton on 2015-04-14.
  */
 @Parcel
-public class Movie {
+public class Movie implements Comparable<Movie> {
 
     String title, slugline, poster, fanart;
     int year;
+    long votes;
 
     @ParcelConstructor
-    public Movie(String title, String slugline, String poster, String fanart, int year) {
+    public Movie(String title, String slugline, String poster, String fanart, int year, long votes) {
         this.title = title;
         this.slugline = slugline;
         this.poster = poster;
         this.fanart = fanart;
         this.year = year;
+        this.votes = votes;
     }
 
     public String getTitle() {
@@ -59,5 +61,18 @@ public class Movie {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public long getVotes() {
+        return votes;
+    }
+
+    public void setVotes(long votes) {
+        this.votes = votes;
+    }
+
+    @Override
+    public int compareTo(Movie movie) {
+        return 0;
     }
 }

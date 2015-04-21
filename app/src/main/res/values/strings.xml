@@ -9,11 +9,13 @@
 
     <string name="movie_fragment">Silverscreen</string>
     <string name="search_fragment">SearchFragment</string>
-    <string name="manage_schedules_fragment">Manage schedules</string>
-    <string name="settings_fragment">Settings</string>
+    <string name="popular_movies_fragment">Popular</string>
+    <string name="trending_movies_fragment">Trending</string>
+    <string name="upcoming_movies_fragment">Upcoming</string>
 
     <string-array name="drawer_items" >
-        <item>@string/manage_schedules_fragment</item>
-        <item>@string/settings_fragment</item>
+        <item>@string/popular_movies_fragment</item>
+        <item>@string/trending_movies_fragment</item>
+        <item>@string/upcoming_movies_fragment</item>
     </string-array>
 </resources>

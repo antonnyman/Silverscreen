@@ -8,45 +8,41 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.MutableData;
 import com.firebase.client.Transaction;
-import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import se.k3.antonochisak.silverscreen.MainActivity;
 import se.k3.antonochisak.silverscreen.R;
 import se.k3.antonochisak.silverscreen.adapters.MovieAdapter;
+import se.k3.antonochisak.silverscreen.api.RestClient;
 import se.k3.antonochisak.silverscreen.api.model.ApiResponse;
-import se.k3.antonochisak.silverscreen.models.Fanart;
+import se.k3.antonochisak.silverscreen.helpers.StaticHelpers;
 import se.k3.antonochisak.silverscreen.models.Movie;
 import se.k3.antonochisak.silverscreen.models.Poster;
 
 /**
  * Created by anton on 2015-04-13.
  */
-public class MoviesFragment extends Fragment implements GridView.OnItemClickListener {
+public class PopularMoviesFragment extends Fragment implements GridView.OnItemClickListener {
 
-    private static final String TAG = MoviesFragment.class.getSimpleName();
+    private static final String TAG = PopularMoviesFragment.class.getSimpleName();
 
     @InjectView(R.id.gridView)
     GridView mMoviesList;
@@ -58,14 +54,11 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
 
     MovieAdapter mAdapter;
 
-
-
+    RestClient restClient;
     Firebase firebase;
     Firebase ref;
 
     String mCurrentClickedMovie = "";
-
-
 
     @Nullable
     @Override
@@ -83,8 +76,9 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
         mMoviesList.setAdapter(mAdapter);
         mMoviesList.setOnItemClickListener(this);
 
+        restClient = new RestClient();
         firebase = new Firebase("https://klara.firebaseio.com/");
-        ref = firebase.child("top_movies");
+        ref = firebase.child(StaticHelpers.FIREBASE_CHILD);
 
         getMovies();
 
@@ -94,7 +88,7 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
 
 
     private void getMovies() {
-        MainActivity.restClient.getApiService().getPopular("images", new Callback<List<ApiResponse>>() {
+        restClient.getApiService().getPopular("images", new Callback<List<ApiResponse>>() {
             @Override
             public void success(List<ApiResponse> apiResponses, Response response) {
                 for (int i = 0; i < apiResponses.size(); i++) {
@@ -103,8 +97,9 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
                                     apiResponses.get(i).getTitle(),
                                     apiResponses.get(i).getIds().getSlug(),
                                     apiResponses.get(i).getImage().getPoster().getMediumPoster(),
-                                    apiResponses.get(i).getImage().getFanart().getFullFanart(),
-                                    apiResponses.get(i).getYear()
+                                    apiResponses.get(i).getImage().getFanart().getMediumFanart(),
+                                    apiResponses.get(i).getYear(),
+                                    0
                             )
                     );
 
@@ -120,35 +115,6 @@ public class MoviesFragment extends Fragment implements GridView.OnItemClickList
             }
         });
 
-    }
-
-    private void getVotes() {
-        ref.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
     }
 
 

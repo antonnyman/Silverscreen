@@ -31,9 +31,7 @@ public class ApiResponse {
         return title;
     }
 
-    public Ids getIds() {
-        return ids;
-    }
+    public Ids getIds() { return ids; }
 
     public int getYear() {
         return year;

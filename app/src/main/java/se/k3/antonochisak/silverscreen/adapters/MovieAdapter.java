@@ -1,26 +1,20 @@
 package se.k3.antonochisak.silverscreen.adapters;
 
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import se.k3.antonochisak.silverscreen.R;
 import se.k3.antonochisak.silverscreen.helpers.StaticHelpers;
-import se.k3.antonochisak.silverscreen.models.Image;
 import se.k3.antonochisak.silverscreen.models.Movie;
-import se.k3.antonochisak.silverscreen.models.Poster;
 
 /**
  * Created by anton on 2015-04-13.
@@ -35,16 +29,11 @@ public class MovieAdapter extends BaseAdapter {
     public MovieAdapter(List<Movie> mMovies, LayoutInflater mLayoutInflater) {
         this.mMovies = mMovies;
         this.mLayoutInflater = mLayoutInflater;
-
-
     }
 
     class ViewHolder {
         @InjectView(R.id.poster)
         ImageView poster;
-
-        @InjectView(R.id.votes)
-        TextView votes;
 
 
         public ViewHolder(View view) {

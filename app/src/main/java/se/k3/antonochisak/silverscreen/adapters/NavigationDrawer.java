@@ -1,4 +1,4 @@
-package se.k3.antonochisak.silverscreen.fragments;
+package se.k3.antonochisak.silverscreen.adapters;
 
 import android.animation.ValueAnimator;
 import android.app.Activity;
@@ -20,18 +20,24 @@ import java.util.Arrays;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import se.k3.antonochisak.silverscreen.MainActivity;
 import se.k3.antonochisak.silverscreen.R;
 import se.k3.antonochisak.silverscreen.adapters.SimpleBaseAdapter;
+import se.k3.antonochisak.silverscreen.fragments.PopularMoviesFragment;
+import se.k3.antonochisak.silverscreen.fragments.TrendingMoviesFragment;
+import se.k3.antonochisak.silverscreen.fragments.UpcomingMoviesFragment;
 
 /**
  * Created by isak on 2015-04-10.
  */
-public class NavigationDrawerFragment implements AdapterView.OnItemClickListener {
+public class NavigationDrawer implements AdapterView.OnItemClickListener {
 
     ActionBar mActionBar;
 
     CharSequence mTitle;
     CharSequence mDrawerTitle;
+
+    private FragmentManager fm;
 
     public String[] mDrawerItems;
     public ActionBarDrawerToggle drawerToggle;
@@ -42,9 +48,11 @@ public class NavigationDrawerFragment implements AdapterView.OnItemClickListener
     @InjectView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
 
-    public NavigationDrawerFragment(FragmentManager fm, Activity activity) {
+    public NavigationDrawer(FragmentManager fm, Activity activity) {
         ButterKnife.inject(this, activity);
         mTitle = activity.getResources().getString(R.string.movie_fragment);
+
+        this.fm = fm;
 
         mDrawerItems = activity.getResources().getStringArray(R.array.drawer_items);
         setupSupportActionBar(activity);
@@ -111,8 +119,13 @@ public class NavigationDrawerFragment implements AdapterView.OnItemClickListener
         String tag = mDrawerItems[position];
         switch(position) {
             case 0:
+                fm.beginTransaction().replace(R.id.content_frame, new PopularMoviesFragment()).commit();
                 break;
             case 1:
+                fm.beginTransaction().replace(R.id.content_frame, new TrendingMoviesFragment()).commit();
+                break;
+            case 2:
+                fm.beginTransaction().replace(R.id.content_frame, new UpcomingMoviesFragment()).commit();
                 break;
         }
         mTitle = tag;

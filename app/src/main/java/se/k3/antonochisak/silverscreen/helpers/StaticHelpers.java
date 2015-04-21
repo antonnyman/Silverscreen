@@ -12,6 +12,9 @@ import android.view.WindowManager;
  */
 public class StaticHelpers {
 
+    public static final String FIREBASE_CHILD = "top_movies";
+
+
     public static int getScreenWidth(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
