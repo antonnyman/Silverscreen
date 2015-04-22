@@ -18,6 +18,7 @@ public class ApiResponse {
     @SerializedName("title")
     public String title;
 
+    // called ids here, but slugline elsewhere?
     @SerializedName("ids")
     public Ids ids;
 
@@ -27,7 +28,10 @@ public class ApiResponse {
     @SerializedName("images")
     public Image image;
 
-    public String getTitle() {
+
+    // Is getters necessary? Instant field lookups is nicer
+
+/*    public String getTitle() {
         return title;
     }
 
@@ -39,7 +43,7 @@ public class ApiResponse {
 
     public Image getImage() {
         return image;
-    }
+    }*/
 
 
 }

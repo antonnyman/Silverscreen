@@ -1,4 +1,4 @@
-package se.k3.antonochisak.silverscreen.adapters;
+package se.k3.antonochisak.silverscreen.navigation_drawer;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
@@ -16,12 +16,12 @@ import se.k3.antonochisak.silverscreen.R;
 /**
  * Created by isak on 2015-04-10.
  */
-public class SimpleBaseAdapter extends BaseAdapter {
+public class NavigationDrawerAdapter extends BaseAdapter {
 
     ArrayList<String> mList;
     LayoutInflater mLayoutInflater;
 
-    public SimpleBaseAdapter(LayoutInflater layoutInflater, ArrayList<String> list) {
+    public NavigationDrawerAdapter(LayoutInflater layoutInflater, ArrayList<String> list) {
         this.mList = list;
         this.mLayoutInflater = layoutInflater;
 

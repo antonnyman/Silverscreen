@@ -8,7 +8,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -19,22 +19,21 @@ import se.k3.antonochisak.silverscreen.models.Movie;
 /**
  * Created by anton on 2015-04-13.
  */
-public class MovieAdapter extends BaseAdapter {
+public class MoviesAdapter extends BaseAdapter {
 
-
-    List<Movie> mMovies;
+    ArrayList<Movie> mMovies;
     LayoutInflater mLayoutInflater;
-    private int mItemWidth, mItemHeight, mMargin, mColumns;
+    private int mItemWidth, mItemHeight, mMargin;
 
-    public MovieAdapter(List<Movie> mMovies, LayoutInflater mLayoutInflater) {
+    public MoviesAdapter(ArrayList<Movie> mMovies, LayoutInflater mLayoutInflater) {
         this.mMovies = mMovies;
         this.mLayoutInflater = mLayoutInflater;
     }
 
+    // We always use a viewholder pattern on listviews!
     class ViewHolder {
         @InjectView(R.id.poster)
         ImageView poster;
-
 
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);
@@ -57,6 +56,7 @@ public class MovieAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
 
+        // Load pictures with picasso
         Picasso.with(view.getContext())
                 .load(mMovies.get(i).getPoster())
                 .resize(mItemWidth, mItemHeight)

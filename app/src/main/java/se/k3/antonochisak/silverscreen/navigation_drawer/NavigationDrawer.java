@@ -1,7 +1,8 @@
-package se.k3.antonochisak.silverscreen.adapters;
+package se.k3.antonochisak.silverscreen.navigation_drawer;
 
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.support.v4.widget.DrawerLayout;
@@ -13,18 +14,15 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import se.k3.antonochisak.silverscreen.MainActivity;
 import se.k3.antonochisak.silverscreen.R;
-import se.k3.antonochisak.silverscreen.adapters.SimpleBaseAdapter;
 import se.k3.antonochisak.silverscreen.fragments.PopularMoviesFragment;
-import se.k3.antonochisak.silverscreen.fragments.TrendingMoviesFragment;
+import se.k3.antonochisak.silverscreen.fragments.StudentFragment;
 import se.k3.antonochisak.silverscreen.fragments.UpcomingMoviesFragment;
 
 /**
@@ -33,7 +31,6 @@ import se.k3.antonochisak.silverscreen.fragments.UpcomingMoviesFragment;
 public class NavigationDrawer implements AdapterView.OnItemClickListener {
 
     ActionBar mActionBar;
-
     CharSequence mTitle;
     CharSequence mDrawerTitle;
 
@@ -50,13 +47,15 @@ public class NavigationDrawer implements AdapterView.OnItemClickListener {
 
     public NavigationDrawer(FragmentManager fm, Activity activity) {
         ButterKnife.inject(this, activity);
-        mTitle = activity.getResources().getString(R.string.movie_fragment);
-
+        mTitle = activity.getResources().getString(R.string.app_name);
         this.fm = fm;
 
+        // This string array represents the different items in the drawer.
+        // The strings in this array should come in the same order as
+        // the onItemClick method use.
         mDrawerItems = activity.getResources().getStringArray(R.array.drawer_items);
-        setupSupportActionBar(activity);
 
+        setupSupportActionBar(activity);
         setupDrawerList(activity);
         initDrawerToggle(activity);
         setupAnim();
@@ -106,7 +105,7 @@ public class NavigationDrawer implements AdapterView.OnItemClickListener {
     }
 
     void setupDrawerList(Activity activity) {
-        SimpleBaseAdapter adapter = new SimpleBaseAdapter(
+        NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(
                 (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE),
                 new ArrayList<>(Arrays.asList(mDrawerItems)));
 
@@ -116,19 +115,23 @@ public class NavigationDrawer implements AdapterView.OnItemClickListener {
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String tag = mDrawerItems[position];
+        String title = mDrawerItems[position];
+
+        Fragment fragment = null;
         switch(position) {
             case 0:
-                fm.beginTransaction().replace(R.id.content_frame, new PopularMoviesFragment()).commit();
+                fragment = new PopularMoviesFragment();
                 break;
             case 1:
-                fm.beginTransaction().replace(R.id.content_frame, new TrendingMoviesFragment()).commit();
+                fragment = new UpcomingMoviesFragment();
                 break;
             case 2:
-                fm.beginTransaction().replace(R.id.content_frame, new UpcomingMoviesFragment()).commit();
+                fragment = new StudentFragment();
                 break;
         }
-        mTitle = tag;
+        fm.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+        mTitle = title;
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 }

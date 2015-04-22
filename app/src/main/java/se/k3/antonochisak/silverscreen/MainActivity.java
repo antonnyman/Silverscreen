@@ -11,15 +11,11 @@ import com.firebase.client.Firebase;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import se.k3.antonochisak.silverscreen.fragments.PopularMoviesFragment;
-import se.k3.antonochisak.silverscreen.adapters.NavigationDrawer;
-
-
+import se.k3.antonochisak.silverscreen.navigation_drawer.NavigationDrawer;
 
 public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-
-
     NavigationDrawer mNavigationDrawer;
 
     @InjectView(R.id.toolbar) Toolbar mToolbar;
@@ -30,9 +26,14 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
+        // Do not touch
         Firebase.setAndroidContext(this);
 
+        // Set toolbar. See activity_main.xml. To retrieve the toolbar after this
+        // use getSupportActionBar which returns an ActionBar item but is in fact this toolbar
         setSupportActionBar(mToolbar);
+
+        // Create navigationDrawer
         mNavigationDrawer = new NavigationDrawer(getFragmentManager(), this);
 
         if(savedInstanceState == null) {

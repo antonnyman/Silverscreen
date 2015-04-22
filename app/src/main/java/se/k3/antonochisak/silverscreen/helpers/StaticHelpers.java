@@ -12,8 +12,12 @@ import android.view.WindowManager;
  */
 public class StaticHelpers {
 
-    public static final String FIREBASE_CHILD = "top_movies";
+    public static final String FIREBASE_TOP_MOVIES = "top_movies";
+    public static final String FIREBASE_URL = "https://klara.firebaseio.com/";
 
+    public static final String TRAKT_CONTENT_TYPE = "Content-type: application/json";
+    public static final String TRAKT_API_KEY = "trakt-api-key: 6669f7e61b6df49bc8faf9fdaf3f3ddc0185c60d5d18e8305cd2ddc18e10238c";
+    public static final String TRAKT_API_VERSION = "trakt-api-version: 2";
 
     public static int getScreenWidth(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);

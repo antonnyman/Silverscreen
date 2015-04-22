@@ -17,7 +17,6 @@ import se.k3.antonochisak.silverscreen.api.service.ApiService;
 public class RestClient {
 
     private static final String API_URL = "https://api-v2launch.trakt.tv";
-
     private ApiService apiService;
 
     public RestClient() {
@@ -32,7 +31,6 @@ public class RestClient {
                 .build();
         apiService = restAdapter.create(ApiService.class);
     }
-
 
     public ApiService getApiService() {
         return apiService;
