@@ -99,7 +99,7 @@ public class UpcomingMoviesFragment extends MoviesFragment implements Callback<L
         // method to get popular movies from Trakt using Retrofit libary.
         // You should do your own method inside of ApiService
         // listener = Callback<List<ApiResponse>>
-        restClient.getApiService().getGetUpcoming("images", mDateFormat.format(new Date()), 30, this);
+        restClient.getApiService().getGetUpcoming("images", mDateFormat.format(new Date()), 30, this); 
     }
 
     @Override
