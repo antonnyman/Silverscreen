@@ -10,4 +10,5 @@ import se.k3.antonochisak.silverscreen.models.Movie;
  */
 public abstract class MoviesFragment extends Fragment implements GridView.OnItemClickListener {
     abstract void updateVotes();
+    abstract void initVoteTimer();
 }

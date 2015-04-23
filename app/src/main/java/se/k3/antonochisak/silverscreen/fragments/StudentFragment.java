@@ -10,7 +10,7 @@ import android.widget.AdapterView;
 /**
  * Created by isak on 2015-04-23.
  */
-public class StudentFragment extends MoviesFragment{
+public class StudentFragment extends MoviesFragment {
 
     @Nullable
     @Override
@@ -20,6 +20,11 @@ public class StudentFragment extends MoviesFragment{
 
     @Override
     void updateVotes() {
+
+    }
+
+    @Override
+    void initVoteTimer() {
 
     }
 

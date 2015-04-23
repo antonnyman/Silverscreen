@@ -24,11 +24,13 @@ public class RestClient {
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .registerTypeAdapter(Date.class, new DateTypeAdapter())
                 .create();
+
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .setEndpoint(API_URL)
                 .setConverter(new GsonConverter(gson))
                 .build();
+
         apiService = restAdapter.create(ApiService.class);
     }
 

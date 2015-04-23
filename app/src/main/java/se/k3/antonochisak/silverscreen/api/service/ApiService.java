@@ -28,7 +28,7 @@ public interface ApiService {
 //            'https://api-v2launch.trakt.tv/movies/trending'
 
     @Headers({TRAKT_CONTENT_TYPE, TRAKT_API_KEY, TRAKT_API_VERSION})
-    @GET("/movies/popular?page=1&limit=40")
+    @GET("/movies/popular")
     void getPopular(@Query("extended") String images, Callback<List<ApiResponse>> callback);
 
 /*    @Headers({TRAKT_CONTENT_TYPE, TRAKT_API_KEY, TRAKT_API_VERSION})
@@ -36,8 +36,9 @@ public interface ApiService {
     void getTrending(@Query("extended") String images, Callback<List<RootApiResponse>> callback);*/
 
     @Headers({TRAKT_CONTENT_TYPE, TRAKT_API_KEY, TRAKT_API_VERSION})
-    @GET("/calendars/all/movies/{date}/{days}?page=1&limit=40")
+    @GET("/calendars/all/movies/{date}/{days}")
     void getGetUpcoming(@Query("extended") String images, @Path("date") String date, @Path("days") int days, Callback<List<RootApiResponse>> callback);
 
     // What is difference between RootApiResponse and ApiResponse?
+    // Maybe in the json parsing there is something like an @optional annotation?
 }

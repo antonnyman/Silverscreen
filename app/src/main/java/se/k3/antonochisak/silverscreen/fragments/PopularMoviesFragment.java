@@ -1,6 +1,7 @@
 package se.k3.antonochisak.silverscreen.fragments;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +17,10 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.MutableData;
 import com.firebase.client.Transaction;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,6 +33,7 @@ import se.k3.antonochisak.silverscreen.R;
 import se.k3.antonochisak.silverscreen.adapters.MoviesAdapter;
 import se.k3.antonochisak.silverscreen.api.RestClient;
 import se.k3.antonochisak.silverscreen.api.model.ApiResponse;
+import se.k3.antonochisak.silverscreen.api.model.RootApiResponse;
 import se.k3.antonochisak.silverscreen.models.Movie;
 
 import static se.k3.antonochisak.silverscreen.helpers.StaticHelpers.FIREBASE_TOP_MOVIES;
@@ -38,7 +43,7 @@ import static se.k3.antonochisak.silverscreen.helpers.StaticHelpers.FIREBASE_URL
  * Created by anton on 2015-04-13.
  */
 
-public class PopularMoviesFragment extends MoviesFragment implements Callback<List<ApiResponse>> {
+public class PopularMoviesFragment extends MoviesFragment implements Callback<List<RootApiResponse>> {
 
     // Tag for logging
     private static final String TAG = PopularMoviesFragment.class.getSimpleName();
@@ -55,6 +60,11 @@ public class PopularMoviesFragment extends MoviesFragment implements Callback<Li
 
     String mCurrentClickedMovie = "";
     MoviesAdapter mAdapter;
+
+    CountDownTimer mVoteTimer;
+    boolean mIsVoteTimerRunning = false;
+
+    DateFormat mDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     @InjectView(R.id.gridView) GridView mMoviesGrid;
 
@@ -93,18 +103,22 @@ public class PopularMoviesFragment extends MoviesFragment implements Callback<Li
         // method to get popular movies from Trakt using Retrofit libary.
         // You should do your own method inside of ApiService
         // listener = Callback<List<ApiResponse>>
-        restClient.getApiService().getPopular("images", this);
+        //restClient.getApiService().getPopular("images", this);
+
+        restClient.getApiService().getGetUpcoming("images", mDateFormat.format(new Date()), 30, this);
+
+        initVoteTimer();
     }
 
     @Override
-    public void success(List<ApiResponse> apiResponses, Response response) {
-        for(ApiResponse r : apiResponses) {
+    public void success(List<RootApiResponse> apiResponses, Response response) {
+        for(RootApiResponse r : apiResponses) {
             Movie movie = new Movie.Builder()
-                    .title(r.title)
-                    .slugLine(r.ids.getSlug())
-                    .poster(r.image.getPoster().getMediumPoster())
-                    .fanart(r.image.getFanart().getFullFanart())
-                    .year(r.year)
+                    .title(r.apiResponse.title)
+                    .slugLine(r.apiResponse.ids.getSlug())
+                    .poster(r.apiResponse.image.getPoster().getMediumPoster())
+                    .fanart(r.apiResponse.image.getFanart().getFullFanart())
+                    .year(r.apiResponse.year)
                     .votes(0)
                     .build();
 
@@ -119,7 +133,31 @@ public class PopularMoviesFragment extends MoviesFragment implements Callback<Li
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+    void initVoteTimer() {
+        mVoteTimer = new CountDownTimer(3000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                mIsVoteTimerRunning = false;
+            }
+        };
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        if(!mIsVoteTimerRunning) {
+            voteOnMovie(i);
+            mVoteTimer.start();
+            mIsVoteTimerRunning = true;
+        }
+    }
+
+    void voteOnMovie(final int i) {
+        Log.i("isak", "voteOnMovie");
         Movie movie = mMovies.get(i);
 
         // Very important

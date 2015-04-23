@@ -18,7 +18,6 @@ public class ApiResponse {
     @SerializedName("title")
     public String title;
 
-    // called ids here, but slugline elsewhere?
     @SerializedName("ids")
     public Ids ids;
 

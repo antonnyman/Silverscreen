@@ -37,7 +37,10 @@ public class MainActivity extends ActionBarActivity {
         mNavigationDrawer = new NavigationDrawer(getFragmentManager(), this);
 
         if(savedInstanceState == null) {
-            getFragmentManager().beginTransaction().replace(R.id.content_frame, new PopularMoviesFragment()).commit();
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.content_frame, new PopularMoviesFragment())
+                    .commit();
         }
     }
 
@@ -56,5 +59,12 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    public void onBackPressed() {
+        if(getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

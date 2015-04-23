@@ -23,7 +23,6 @@ import butterknife.InjectView;
 import se.k3.antonochisak.silverscreen.R;
 import se.k3.antonochisak.silverscreen.fragments.PopularMoviesFragment;
 import se.k3.antonochisak.silverscreen.fragments.StudentFragment;
-import se.k3.antonochisak.silverscreen.fragments.UpcomingMoviesFragment;
 
 /**
  * Created by isak on 2015-04-10.
@@ -123,13 +122,10 @@ public class NavigationDrawer implements AdapterView.OnItemClickListener {
                 fragment = new PopularMoviesFragment();
                 break;
             case 1:
-                fragment = new UpcomingMoviesFragment();
-                break;
-            case 2:
                 fragment = new StudentFragment();
                 break;
         }
-        fm.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        fm.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack(title).commit();
 
         mTitle = title;
         mDrawerLayout.closeDrawer(mDrawerList);
