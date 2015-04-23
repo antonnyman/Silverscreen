@@ -12,11 +12,6 @@ import android.widget.AdapterView;
  */
 public class StudentFragment extends MoviesFragment {
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
 
     @Override
     void updateVotes() {

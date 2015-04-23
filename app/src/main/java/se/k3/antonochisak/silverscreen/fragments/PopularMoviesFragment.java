@@ -106,7 +106,6 @@ public class PopularMoviesFragment extends MoviesFragment implements Callback<Li
         //restClient.getApiService().getPopular("images", this);
 
         restClient.getApiService().getGetUpcoming("images", mDateFormat.format(new Date()), 30, this);
-
         initVoteTimer();
     }
 
@@ -174,6 +173,7 @@ public class PopularMoviesFragment extends MoviesFragment implements Callback<Li
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 Toast.makeText(getActivity(), "Gillade " + mMovies.get(i).getTitle(), Toast.LENGTH_SHORT).show();
                 updateVotes();
+                // not updating votes
             }
         });
     }
@@ -182,7 +182,11 @@ public class PopularMoviesFragment extends MoviesFragment implements Callback<Li
         ref.child(mCurrentClickedMovie + "/votes").runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                if (mutableData.getValue() != null) {
+                Log.i("isak", "updateVotes");
+                if (mutableData.getValue() == null) {
+                    mutableData.setValue(1);
+                    Log.d(TAG + " mutableValue:" + mutableData, mutableData.getValue().toString());
+                } else {
                     mutableData.setValue((Long) mutableData.getValue() + 1);
                 }
                 return Transaction.success(mutableData);
