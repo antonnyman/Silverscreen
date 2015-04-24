@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">KD323B Assignment 5</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="drawer_opened">Drawer opened</string>
+    <string name="drawer_closed">Drawer closed</string>
+
+    <string name="popular_movies_fragment">Popular</string>
+
+    <!--    You must add an item here for it to show up in the navigation drawer.
+        Later, the item in the nav drawer must lead to a new fragment.-->
+    <string-array name="drawer_items">
+        // do not touch first item
+        <item>@string/popular_movies_fragment</item>
+    </string-array>
+
+</resources>
