@@ -19,6 +19,7 @@ import java.util.Arrays;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import se.k3.antonochisak.kd323bassignment5.R;
+import se.k3.antonochisak.kd323bassignment5.fragments.MyFragment;
 import se.k3.antonochisak.kd323bassignment5.fragments.PopularMoviesFragment;
 import se.k3.antonochisak.kd323bassignment5.helpers.StaticHelpers;
 
@@ -103,7 +104,9 @@ public class NavigationDrawer implements AdapterView.OnItemClickListener {
             case 0:
                 fragment = new PopularMoviesFragment();
                 break;
-            // add new case
+            case 1:
+                fragment = new MyFragment();
+                break;
             default:
                 break;
         }

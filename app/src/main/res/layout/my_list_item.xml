@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/my_poster"
+        android:background="@drawable/large_movie_poster"/>
+
+    <TextView
+        android:paddingTop="16dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/my_title"
+        android:text="title"
+        android:layout_toEndOf="@+id/my_poster"/>
+
+    <TextView
+        android:paddingLeft="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/my_year"
+        android:text="year"
+        android:layout_toEndOf="@id/my_poster"
+        android:layout_below="@+id/my_title"/>
+
+    <TextView
+        android:paddingLeft="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/my_overview"
+        android:text="overview"
+        android:layout_toEndOf="@+id/my_poster"
+        android:layout_below="@id/my_year"/>
+
+    <TextView
+        android:paddingLeft="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/my_tagline"
+        android:text="tagline"
+        android:layout_toEndOf="@+id/my_poster"
+        android:layout_below="@id/my_overview"/>
+
+</RelativeLayout>

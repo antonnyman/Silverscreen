@@ -1,6 +1,5 @@
 package se.k3.antonochisak.kd323bassignment5.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -9,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
@@ -22,98 +21,69 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import se.k3.antonochisak.kd323bassignment5.R;
-import se.k3.antonochisak.kd323bassignment5.adapters.PopularMoviesAdapter;
+import se.k3.antonochisak.kd323bassignment5.adapters.MyAdapter;
 import se.k3.antonochisak.kd323bassignment5.api.RestClient;
-import se.k3.antonochisak.kd323bassignment5.api.model.ApiResponse;
+import se.k3.antonochisak.kd323bassignment5.api.model.RootApiResponse;
+import se.k3.antonochisak.kd323bassignment5.helpers.StaticHelpers;
 import se.k3.antonochisak.kd323bassignment5.models.movie.Movie;
-
-import static se.k3.antonochisak.kd323bassignment5.helpers.StaticHelpers.FIREBASE_CHILD;
-import static se.k3.antonochisak.kd323bassignment5.helpers.StaticHelpers.FIREBASE_URL;
 
 /**
  * Created by isak on 2015-04-24.
  */
+public class MyFragment extends MoviesFragment implements AdapterView.OnItemClickListener{
 
-public class PopularMoviesFragment extends Fragment
-        implements Callback<List<ApiResponse>>, GridView.OnItemClickListener {
-
-    // Tag for logging,
-    private static final String TAG = PopularMoviesFragment.class.getSimpleName();
-
-    // List of movies
-    ArrayList<Movie> mMovies;
-
-    // This is pushed to mFireBase
-    HashMap<String, Object> mMovieMap;
-
-    RestClient mRestClient;
-    Firebase mFireBase;
-    Firebase mRef;
-
-    String mCurrentClickedMovie = "";
+    private static final String TAG = MyFragment.class.getSimpleName();
 
     CountDownTimer mVoteTimer;
     boolean mIsVoteTimerRunning = false;
 
-    PopularMoviesAdapter mAdapter;
+    ArrayList<Movie> mMovies;
+    String mCurrentClickedMovie = "";
+    HashMap<String, Object> mMovieMap;
 
-    @InjectView(R.id.gridView)
-    GridView mMoviesGrid;
+    RestClient mRestClient;
+    Firebase mFirebase;
+    Firebase mRef;
+
+    MyAdapter mAdapter;
+    ListView mListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMovies = new ArrayList<>();
         mMovieMap = new HashMap<>();
-
         mRestClient = new RestClient();
-        mFireBase = new Firebase(FIREBASE_URL);
-        mRef = mFireBase.child(FIREBASE_CHILD);
+        mFirebase = new Firebase(StaticHelpers.FIREBASE_URL);
+        mRef = mFirebase.child(StaticHelpers.FIREBASE_CHILD);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_popular_movies, container, false);
-        // Inject views
-        ButterKnife.inject(this, view);
+        View v = inflater.inflate(R.layout.my_fragment_layout, container, false);
+        mListView = (ListView) v.findViewById(R.id.my_listview);
 
-        // Create adapter
-        mAdapter = new PopularMoviesAdapter(mMovies, getActivity().getLayoutInflater());
-        mMoviesGrid.setAdapter(mAdapter);
+        mAdapter = new MyAdapter(mMovies, getActivity().getLayoutInflater());
 
-        // listener= GridView.OnItemClickListener
-        mMoviesGrid.setOnItemClickListener(this);
-        return view;
+        mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(this);
+        return v;
     }
-
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // listener = Callback<List<ApiResponse>>
-        mRestClient.getApiService().getPopular("images", this);
+        mRestClient.getApiService().getTrending("full,images", this);
         initVoteTimer();
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if (!mIsVoteTimerRunning) {
-            voteOnMovie(i);
-            mVoteTimer.start();
-            mIsVoteTimerRunning = true;
-        }
-    }
-
     void initVoteTimer() {
-        // So that there can only be one vote per every 3 seconds
         mVoteTimer = new CountDownTimer(3000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -127,6 +97,7 @@ public class PopularMoviesFragment extends Fragment
         };
     }
 
+    @Override
     void voteOnMovie(final int i) {
         Movie movie = mMovies.get(i);
 
@@ -148,6 +119,7 @@ public class PopularMoviesFragment extends Fragment
         });
     }
 
+    @Override
     void updateVotes() {
         mRef.child(mCurrentClickedMovie + "/votes").runTransaction(new Transaction.Handler() {
             @Override
@@ -170,14 +142,16 @@ public class PopularMoviesFragment extends Fragment
     }
 
     @Override
-    public void success(List<ApiResponse> apiResponses, Response response) {
-        for (ApiResponse r : apiResponses) {
+    public void success(List<RootApiResponse> rootApiResponses, Response response) {
+        for (RootApiResponse r : rootApiResponses) {
             Movie movie = new Movie.Builder()
-                    .title(r.title)
-                    .slugLine(r.ids.getSlug())
-                    .poster(r.image.getPoster().getMediumPoster())
-                    .fanArt(r.image.getFanArt().getFullFanArt())
-                    .year(r.year)
+                    .title(r.apiResponse.title)
+                    .slugLine(r.apiResponse.ids.getSlug())
+                    .poster(r.apiResponse.image.getPoster().getMediumPoster())
+                    .fanArt(r.apiResponse.image.getFanArt().getFullFanArt())
+                    .year(r.apiResponse.year)
+                    .overview(r.apiResponse.overview)
+                    .tagline(r.apiResponse.tagline)
                     .build();
 
             mMovies.add(movie);
@@ -188,5 +162,14 @@ public class PopularMoviesFragment extends Fragment
     @Override
     public void failure(RetrofitError error) {
         error.printStackTrace();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (!mIsVoteTimerRunning) {
+            voteOnMovie(position);
+            mVoteTimer.start();
+            mIsVoteTimerRunning = true;
+        }
     }
 }

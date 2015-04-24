@@ -25,4 +25,10 @@ public class ApiResponse {
 
     @SerializedName("images")
     public Image image;
+
+    @SerializedName("overview")
+    public String overview;
+
+    @SerializedName("tagline")
+    public String tagline;
 }

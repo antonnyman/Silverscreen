@@ -20,7 +20,7 @@ public class MainActivity extends ActionBarActivity {
     NavigationDrawer mNavigationDrawer;
     FragmentManager mFragmentManager;
 
-    String[] mTitles;
+    String mTitle;
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
 
@@ -38,8 +38,8 @@ public class MainActivity extends ActionBarActivity {
         // Set toolbar. See activity_main.xml. To retrieve the toolbar after this
         // use getSupportActionBar which returns an ActionBar item but is in fact this toolbar
         setSupportActionBar(mToolbar);
-        mTitles = getResources().getStringArray(R.array.drawer_items);
-        setTitle(mTitles[0]);
+        mTitle = getResources().getString(R.string.popular_movies_fragment);
+        setTitle(mTitle);
 
         // Create navigationDrawer
         mNavigationDrawer = new NavigationDrawer(mFragmentManager, this);
@@ -47,7 +47,7 @@ public class MainActivity extends ActionBarActivity {
         if (savedInstanceState == null) {
             mFragmentManager
                     .beginTransaction()
-                    .replace(R.id.content_frame, new PopularMoviesFragment(), mTitles[0])
+                    .replace(R.id.content_frame, new PopularMoviesFragment(), mTitle)
                     .commit();
         }
     }

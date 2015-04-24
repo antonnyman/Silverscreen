@@ -76,6 +76,6 @@ public class PopularMoviesAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return i;
+        return 0;
     }
 }
