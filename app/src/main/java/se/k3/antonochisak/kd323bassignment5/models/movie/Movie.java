@@ -1,11 +1,12 @@
 package se.k3.antonochisak.kd323bassignment5.models.movie;
 
+import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
 
 /**
  * Created by isak on 2015-04-24.
  */
-// parcel?
+
 public class Movie {
     private String title, slugline, poster, fanArt;
     private int year;
