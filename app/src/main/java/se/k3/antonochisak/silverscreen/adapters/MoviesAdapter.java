@@ -30,11 +30,26 @@ public class MoviesAdapter extends BaseAdapter {
         this.mLayoutInflater = mLayoutInflater;
     }
 
+    // We always use a viewholder pattern on listviews!
+    class ViewHolder {
+        @InjectView(R.id.poster)
+        ImageView poster;
+
+        public ViewHolder(View view) {
+            ButterKnife.inject(this, view);
+
+            int screenWidth = StaticHelpers.getScreenWidth(view.getContext());
+            mItemWidth = (screenWidth / 2);
+            mItemHeight = (int) ((double) mItemWidth / 0.677);
+            mMargin = StaticHelpers.getPixelsFromDp(view.getContext(), 2);
+        }
+    }
+
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         ViewHolder holder;
         if (view == null) {
-            view = mLayoutInflater.inflate(R.layout.list_item, viewGroup, false);
+            view = mLayoutInflater.inflate(R.layout.popular_list_item, viewGroup, false);
             holder = new ViewHolder(view);
             view.setTag(holder);
         } else {
@@ -62,20 +77,5 @@ public class MoviesAdapter extends BaseAdapter {
     @Override
     public long getItemId(int i) {
         return i;
-    }
-
-    // We always use a viewholder pattern on listviews!
-    class ViewHolder {
-        @InjectView(R.id.poster)
-        ImageView poster;
-
-        public ViewHolder(View view) {
-            ButterKnife.inject(this, view);
-
-            int screenWidth = StaticHelpers.getScreenWidth(view.getContext());
-            mItemWidth = (screenWidth / 2);
-            mItemHeight = (int) ((double) mItemWidth / 0.677);
-            mMargin = StaticHelpers.getPixelsFromDp(view.getContext(), 2);
-        }
     }
 }

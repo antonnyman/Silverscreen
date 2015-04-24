@@ -79,7 +79,7 @@ public class PopularMoviesFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_movies, container, false);
+        View view = inflater.inflate(R.layout.fragment_popular_movies, container, false);
         // Inject views
         ButterKnife.inject(this, view);
 

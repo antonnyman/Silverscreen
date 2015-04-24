@@ -24,8 +24,10 @@ public interface ApiService {
     @GET("/movies/popular")
     void getPopular(@Query("extended") String images, Callback<List<ApiResponse>> callback);
 
+    // Add your own method below, similar to the one above but with different url
+
     @Headers({TRAKT_CONTENT_TYPE, TRAKT_API_KEY, TRAKT_API_VERSION})
-    @GET("/movies/trending")
+    @GET("/movies/") // unfinished url
     void getTrending(@Query("extended") String images, Callback<List<RootApiResponse>> callback);
 
 }
