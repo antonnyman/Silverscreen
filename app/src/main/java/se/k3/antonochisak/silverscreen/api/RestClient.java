@@ -11,12 +11,13 @@ import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 import se.k3.antonochisak.silverscreen.api.service.ApiService;
 
+import static se.k3.antonochisak.silverscreen.helpers.StaticHelpers.API_URL;
+
 /**
  * Created by anton on 2015-04-13.
  */
 public class RestClient {
 
-    private static final String API_URL = "https://api-v2launch.trakt.tv";
     private ApiService apiService;
 
     public RestClient() {

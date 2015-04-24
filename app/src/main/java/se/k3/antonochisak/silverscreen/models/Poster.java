@@ -11,21 +11,19 @@ import org.parceler.ParcelConstructor;
 @Parcel
 public class Poster {
 
+    @SerializedName("full")
+    public String fullPoster;
+    @SerializedName("medium")
+    public String mediumPoster;
+    @SerializedName("thumb")
+    public String thumbPoster;
+
     @ParcelConstructor
     public Poster(String fullPoster, String mediumPoster, String thumbPoster) {
         this.fullPoster = fullPoster;
         this.mediumPoster = mediumPoster;
         this.thumbPoster = thumbPoster;
     }
-
-    @SerializedName("full")
-    public String fullPoster;
-
-    @SerializedName("medium")
-    public String mediumPoster;
-
-    @SerializedName("thumb")
-    public String thumbPoster;
 
     public String getFullPoster() {
         return fullPoster;

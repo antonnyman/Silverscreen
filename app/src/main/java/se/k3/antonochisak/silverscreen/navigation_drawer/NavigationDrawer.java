@@ -7,11 +7,10 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -22,32 +21,30 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import se.k3.antonochisak.silverscreen.R;
 import se.k3.antonochisak.silverscreen.fragments.PopularMoviesFragment;
-import se.k3.antonochisak.silverscreen.fragments.StudentFragment;
+
+import static se.k3.antonochisak.silverscreen.helpers.StaticHelpers.isFragmentVisible;
 
 /**
  * Created by isak on 2015-04-10.
  */
 public class NavigationDrawer implements AdapterView.OnItemClickListener {
 
-    ActionBar mActionBar;
-    CharSequence mTitle;
-    CharSequence mDrawerTitle;
-
-    private FragmentManager fm;
-
-    public String[] mDrawerItems;
     public ActionBarDrawerToggle drawerToggle;
     public ValueAnimator anim;
+    public String[] mDrawerItems;
 
-    @InjectView(R.id.drawer_list)
-    ListView mDrawerList;
-    @InjectView(R.id.drawer_layout)
-    DrawerLayout mDrawerLayout;
+    private ActionBar mActionBar;
+    private CharSequence mTitle;
+    private CharSequence mDrawerTitle;
+    private FragmentManager mFragmentManager;
 
-    public NavigationDrawer(FragmentManager fm, Activity activity) {
+    public @InjectView(R.id.drawer_list) ListView mDrawerList;
+    public @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
+
+    public NavigationDrawer(FragmentManager mFragmentManager, Activity activity) {
         ButterKnife.inject(this, activity);
         mTitle = activity.getResources().getString(R.string.app_name);
-        this.fm = fm;
+        this.mFragmentManager = mFragmentManager;
 
         // This string array represents the different items in the drawer.
         // The strings in this array should come in the same order as
@@ -57,20 +54,6 @@ public class NavigationDrawer implements AdapterView.OnItemClickListener {
         setupSupportActionBar(activity);
         setupDrawerList(activity);
         initDrawerToggle(activity);
-        setupAnim();
-    }
-
-    private void setupAnim() {
-        anim = ValueAnimator.ofFloat(1, 0);
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                float slideOffset = (Float) valueAnimator.getAnimatedValue();
-                drawerToggle.onDrawerSlide(mDrawerLayout, slideOffset);
-            }
-        });
-        anim.setInterpolator(new DecelerateInterpolator());
-        anim.setDuration(300);
     }
 
     void initDrawerToggle(final Activity activity) {
@@ -98,7 +81,7 @@ public class NavigationDrawer implements AdapterView.OnItemClickListener {
     }
 
     void setupSupportActionBar(Activity activity) {
-        mActionBar = ((ActionBarActivity) activity).getSupportActionBar();
+        mActionBar = ((AppCompatActivity) activity).getSupportActionBar();
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setHomeButtonEnabled(true);
     }
@@ -117,16 +100,19 @@ public class NavigationDrawer implements AdapterView.OnItemClickListener {
         String title = mDrawerItems[position];
 
         Fragment fragment = null;
-        switch(position) {
+        switch (position) {
             case 0:
                 fragment = new PopularMoviesFragment();
                 break;
-            case 1:
-                fragment = new StudentFragment();
+            // add new case
+            default:
                 break;
         }
-        fm.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack(title).commit();
 
+        // only replace the current fragment if the chosen fragment isn't already visible
+        if (!isFragmentVisible(mFragmentManager, title)) {
+            mFragmentManager.beginTransaction().replace(R.id.content_frame, fragment, title).addToBackStack(null).commit();
+        }
         mTitle = title;
         mDrawerLayout.closeDrawer(mDrawerList);
     }

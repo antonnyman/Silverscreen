@@ -11,21 +11,19 @@ import org.parceler.ParcelConstructor;
 @Parcel
 public class Fanart {
 
+    @SerializedName("full")
+    public String fullFanart;
+    @SerializedName("medium")
+    public String mediumFanart;
+    @SerializedName("thumb")
+    public String thumbFanart;
+
     @ParcelConstructor
     public Fanart(String fullFanart, String mediumFanart, String thumbFanart) {
         this.fullFanart = fullFanart;
         this.mediumFanart = mediumFanart;
         this.thumbFanart = thumbFanart;
     }
-
-    @SerializedName("full")
-    public String fullFanart;
-
-    @SerializedName("medium")
-    public String mediumFanart;
-
-    @SerializedName("thumb")
-    public String thumbFanart;
 
     public String getFullFanart() {
         return fullFanart;

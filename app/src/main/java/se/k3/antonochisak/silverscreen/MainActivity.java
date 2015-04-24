@@ -1,7 +1,8 @@
 package se.k3.antonochisak.silverscreen;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.FragmentManager;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,12 +14,14 @@ import butterknife.InjectView;
 import se.k3.antonochisak.silverscreen.fragments.PopularMoviesFragment;
 import se.k3.antonochisak.silverscreen.navigation_drawer.NavigationDrawer;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
     NavigationDrawer mNavigationDrawer;
+    FragmentManager mFragmentManager;
 
-    @InjectView(R.id.toolbar) Toolbar mToolbar;
+    String[] mTitles;
+    @InjectView(R.id.toolbar)
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,20 +29,24 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
+        mFragmentManager = getFragmentManager();
+
         // Do not touch
         Firebase.setAndroidContext(this);
 
         // Set toolbar. See activity_main.xml. To retrieve the toolbar after this
         // use getSupportActionBar which returns an ActionBar item but is in fact this toolbar
         setSupportActionBar(mToolbar);
+        mTitles = getResources().getStringArray(R.array.drawer_items);
+        setTitle(mTitles[0]);
 
         // Create navigationDrawer
-        mNavigationDrawer = new NavigationDrawer(getFragmentManager(), this);
+        mNavigationDrawer = new NavigationDrawer(mFragmentManager, this);
 
-        if(savedInstanceState == null) {
-            getFragmentManager()
+        if (savedInstanceState == null) {
+            mFragmentManager
                     .beginTransaction()
-                    .replace(R.id.content_frame, new PopularMoviesFragment())
+                    .replace(R.id.content_frame, new PopularMoviesFragment(), mTitles[0])
                     .commit();
         }
     }
@@ -53,7 +60,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(mNavigationDrawer.drawerToggle.onOptionsItemSelected(item)) {
+        if (mNavigationDrawer.drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -61,8 +68,12 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if(getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
+        int backStackEntryCount = mFragmentManager.getBackStackEntryCount();
+
+        if (mNavigationDrawer.mDrawerLayout.isDrawerOpen(mNavigationDrawer.mDrawerList)) {
+            mNavigationDrawer.mDrawerLayout.closeDrawers();
+        } else if (backStackEntryCount > 0) {
+            mFragmentManager.popBackStack();
         } else {
             super.onBackPressed();
         }

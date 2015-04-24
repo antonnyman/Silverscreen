@@ -4,8 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
-import java.util.ArrayList;
-
 /**
  * Created by anton on 2015-04-13.
  */

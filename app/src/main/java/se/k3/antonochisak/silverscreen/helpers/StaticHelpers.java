@@ -1,5 +1,7 @@
 package se.k3.antonochisak.silverscreen.helpers;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -12,7 +14,9 @@ import android.view.WindowManager;
  */
 public class StaticHelpers {
 
-    public static final String FIREBASE_TOP_MOVIES = "top_movies";
+    public static final String FIREBASE_CHILD = "top_movies"; // Change this to create a new "room" to view on the desktop
+
+    public static final String API_URL = "https://api-v2launch.trakt.tv";
     public static final String FIREBASE_URL = "https://klara.firebaseio.com/";
 
     public static final String TRAKT_CONTENT_TYPE = "Content-type: application/json";
@@ -26,9 +30,14 @@ public class StaticHelpers {
         display.getSize(size);
         return size.x;
     }
+
     public static int getPixelsFromDp(Context context, int dp) {
         Resources r = context.getResources();
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
     }
 
+    public static boolean isFragmentVisible(FragmentManager fm, String tag) {
+        Fragment test = fm.findFragmentByTag(tag);
+        return test != null && test.isVisible();
+    }
 }

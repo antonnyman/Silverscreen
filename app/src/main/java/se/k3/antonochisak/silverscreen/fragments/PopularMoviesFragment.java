@@ -1,5 +1,6 @@
 package se.k3.antonochisak.silverscreen.fragments;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -17,10 +18,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.MutableData;
 import com.firebase.client.Transaction;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,17 +31,17 @@ import se.k3.antonochisak.silverscreen.R;
 import se.k3.antonochisak.silverscreen.adapters.MoviesAdapter;
 import se.k3.antonochisak.silverscreen.api.RestClient;
 import se.k3.antonochisak.silverscreen.api.model.ApiResponse;
-import se.k3.antonochisak.silverscreen.api.model.RootApiResponse;
 import se.k3.antonochisak.silverscreen.models.Movie;
 
-import static se.k3.antonochisak.silverscreen.helpers.StaticHelpers.FIREBASE_TOP_MOVIES;
+import static se.k3.antonochisak.silverscreen.helpers.StaticHelpers.FIREBASE_CHILD;
 import static se.k3.antonochisak.silverscreen.helpers.StaticHelpers.FIREBASE_URL;
 
 /**
  * Created by anton on 2015-04-13.
  */
 
-public class PopularMoviesFragment extends MoviesFragment implements Callback<List<RootApiResponse>> {
+public class PopularMoviesFragment extends Fragment
+        implements Callback<List<ApiResponse>>, GridView.OnItemClickListener {
 
     // Tag for logging
     private static final String TAG = PopularMoviesFragment.class.getSimpleName();
@@ -64,9 +62,8 @@ public class PopularMoviesFragment extends MoviesFragment implements Callback<Li
     CountDownTimer mVoteTimer;
     boolean mIsVoteTimerRunning = false;
 
-    DateFormat mDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-
-    @InjectView(R.id.gridView) GridView mMoviesGrid;
+    @InjectView(R.id.gridView)
+    GridView mMoviesGrid;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,7 +73,7 @@ public class PopularMoviesFragment extends MoviesFragment implements Callback<Li
 
         restClient = new RestClient();
         firebase = new Firebase(FIREBASE_URL);
-        ref = firebase.child(FIREBASE_TOP_MOVIES);
+        ref = firebase.child(FIREBASE_CHILD);
     }
 
     @Nullable
@@ -100,38 +97,20 @@ public class PopularMoviesFragment extends MoviesFragment implements Callback<Li
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // method to get popular movies from Trakt using Retrofit libary.
-        // You should do your own method inside of ApiService
         // listener = Callback<List<ApiResponse>>
-        //restClient.getApiService().getPopular("images", this);
-
-        restClient.getApiService().getGetUpcoming("images", mDateFormat.format(new Date()), 30, this);
+        restClient.getApiService().getPopular("images", this);
         initVoteTimer();
     }
 
     @Override
-    public void success(List<RootApiResponse> apiResponses, Response response) {
-        for(RootApiResponse r : apiResponses) {
-            Movie movie = new Movie.Builder()
-                    .title(r.apiResponse.title)
-                    .slugLine(r.apiResponse.ids.getSlug())
-                    .poster(r.apiResponse.image.getPoster().getMediumPoster())
-                    .fanart(r.apiResponse.image.getFanart().getFullFanart())
-                    .year(r.apiResponse.year)
-                    .votes(0)
-                    .build();
-
-            mMovies.add(movie);
-            mAdapter.notifyDataSetChanged();
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        if (!mIsVoteTimerRunning) {
+            voteOnMovie(i);
+            mVoteTimer.start();
+            mIsVoteTimerRunning = true;
         }
     }
 
-    @Override
-    public void failure(RetrofitError error) {
-        error.printStackTrace();
-    }
-
-    @Override
     void initVoteTimer() {
         mVoteTimer = new CountDownTimer(3000, 1000) {
             @Override
@@ -146,17 +125,7 @@ public class PopularMoviesFragment extends MoviesFragment implements Callback<Li
         };
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if(!mIsVoteTimerRunning) {
-            voteOnMovie(i);
-            mVoteTimer.start();
-            mIsVoteTimerRunning = true;
-        }
-    }
-
     void voteOnMovie(final int i) {
-        Log.i("isak", "voteOnMovie");
         Movie movie = mMovies.get(i);
 
         // Very important
@@ -173,7 +142,6 @@ public class PopularMoviesFragment extends MoviesFragment implements Callback<Li
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 Toast.makeText(getActivity(), "Gillade " + mMovies.get(i).getTitle(), Toast.LENGTH_SHORT).show();
                 updateVotes();
-                // not updating votes
             }
         });
     }
@@ -182,10 +150,8 @@ public class PopularMoviesFragment extends MoviesFragment implements Callback<Li
         ref.child(mCurrentClickedMovie + "/votes").runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                Log.i("isak", "updateVotes");
                 if (mutableData.getValue() == null) {
                     mutableData.setValue(1);
-                    Log.d(TAG + " mutableValue:" + mutableData, mutableData.getValue().toString());
                 } else {
                     mutableData.setValue((Long) mutableData.getValue() + 1);
                 }
@@ -199,5 +165,26 @@ public class PopularMoviesFragment extends MoviesFragment implements Callback<Li
                 }
             }
         });
+    }
+
+    @Override
+    public void success(List<ApiResponse> apiResponses, Response response) {
+        for (ApiResponse r : apiResponses) {
+            Movie movie = new Movie.Builder()
+                    .title(r.title)
+                    .slugLine(r.ids.getSlug())
+                    .poster(r.image.getPoster().getMediumPoster())
+                    .fanart(r.image.getFanart().getFullFanart())
+                    .year(r.year)
+                    .build();
+
+            mMovies.add(movie);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void failure(RetrofitError error) {
+        error.printStackTrace();
     }
 }

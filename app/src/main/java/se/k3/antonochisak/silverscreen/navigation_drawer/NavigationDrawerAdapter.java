@@ -27,20 +27,12 @@ public class NavigationDrawerAdapter extends BaseAdapter {
 
     }
 
-    class ViewHolder {
-        @InjectView(R.id.item_list_text_view)
-        TextView itemTextView;
-        public ViewHolder(View base) {
-            ButterKnife.inject(this, base);
-        }
-    }
-
     @SuppressLint("InflateParams")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         ViewHolder holder;
-        if(convertView == null) {
+        if (convertView == null) {
             v = mLayoutInflater.inflate(R.layout.drawer_list_item, parent, false);
             holder = new ViewHolder(v);
             v.setTag(holder);
@@ -64,5 +56,14 @@ public class NavigationDrawerAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    class ViewHolder {
+        @InjectView(R.id.item_list_text_view)
+        TextView itemTextView;
+
+        public ViewHolder(View base) {
+            ButterKnife.inject(this, base);
+        }
     }
 }

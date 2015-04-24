@@ -4,8 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
-import java.util.ArrayList;
-
 import se.k3.antonochisak.silverscreen.models.Ids;
 import se.k3.antonochisak.silverscreen.models.Image;
 
@@ -26,23 +24,4 @@ public class ApiResponse {
 
     @SerializedName("images")
     public Image image;
-
-
-    // Is getters necessary? Instant field lookups is nicer
-
-/*    public String getTitle() {
-        return title;
-    }
-
-    public Ids getIds() { return ids; }
-
-    public int getYear() {
-        return year;
-    }
-
-    public Image getImage() {
-        return image;
-    }*/
-
-
 }
