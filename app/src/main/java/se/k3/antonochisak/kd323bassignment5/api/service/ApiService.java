@@ -20,10 +20,10 @@ import static se.k3.antonochisak.kd323bassignment5.helpers.StaticHelpers.TRAKT_C
 
 public interface ApiService {
 
-    String limit = "?page=1&limit=40";
+    String pagination = "?page=1&limit=40";
 
     @Headers({TRAKT_CONTENT_TYPE, TRAKT_API_KEY, TRAKT_API_VERSION})
-    @GET("/movies/popular")
+    @GET("/movies/popular" + pagination)
     void getPopular(@Query("extended") String extended, Callback<List<ApiResponse>> callback);
 
     @Headers({TRAKT_CONTENT_TYPE, TRAKT_API_KEY, TRAKT_API_VERSION})
